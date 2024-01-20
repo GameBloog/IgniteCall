@@ -15,7 +15,7 @@ import {
   IntervalItem,
 } from "./styles"
 import { ArrowRight } from "phosphor-react"
-import { useFieldArray, useForm } from "react-hook-form"
+import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { getWeekDays } from "@/utils/get-week-days"
 
@@ -26,55 +26,56 @@ export default function TimeIntervals() {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { isSubmitting, errors },
   } = useForm({
     defaultValues: {
       Intervals: [
         {
           weekDay: 0,
-          enable: false,
+          enabled: false,
           startTime: "08:00",
           endTime: "18:00",
         },
 
         {
           weekDay: 1,
-          enable: true,
+          enabled: true,
           startTime: "08:00",
           endTime: "18:00",
         },
 
         {
           weekDay: 2,
-          enable: true,
+          enabled: true,
           startTime: "08:00",
           endTime: "18:00",
         },
 
         {
           weekDay: 3,
-          enable: true,
+          enabled: true,
           startTime: "08:00",
           endTime: "18:00",
         },
 
         {
           weekDay: 4,
-          enable: true,
+          enabled: true,
           startTime: "08:00",
           endTime: "18:00",
         },
 
         {
           weekDay: 5,
-          enable: true,
+          enabled: true,
           startTime: "08:00",
           endTime: "18:00",
         },
 
         {
           weekDay: 6,
-          enable: false,
+          enabled: false,
           startTime: "08:00",
           endTime: "18:00",
         },
@@ -88,6 +89,8 @@ export default function TimeIntervals() {
     control,
     name: "Intervals",
   })
+
+  const intervals = watch("Intervals")
 
   async function handleSetTimeIntervals() {}
 
@@ -109,7 +112,20 @@ export default function TimeIntervals() {
             return (
               <IntervalItem key={field.id}>
                 <IntervalDay>
-                  <Checkbox />
+                  <Controller
+                    name={`Intervals.${index}.enabled`}
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Checkbox
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked === true)
+                          }}
+                          checked={field.value}
+                        />
+                      )
+                    }}
+                  />
                   <Text>{weekDays[field.weekDay]}</Text>
                 </IntervalDay>
                 <IntervalInput>
@@ -118,6 +134,7 @@ export default function TimeIntervals() {
                     type="time"
                     crossOrigin=""
                     step={60}
+                    disabled={intervals[index].enabled === false}
                     {...register(`Intervals.${index}.startTime`)}
                   ></TextInput>
                   <TextInput
@@ -125,6 +142,7 @@ export default function TimeIntervals() {
                     type="time"
                     crossOrigin=""
                     step={60}
+                    disabled={intervals[index].enabled === false}
                     {...register(`Intervals.${index}.endTime`)}
                   ></TextInput>
                 </IntervalInput>
