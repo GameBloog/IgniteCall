@@ -22,7 +22,7 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
-  timeIntervals UserTimeInterval[]
+  userTimeIntervals UserTimeInterval[]
   schedulings Scheduling[]
 
   @@map("users")
