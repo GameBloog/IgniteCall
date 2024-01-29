@@ -18,6 +18,8 @@ export default async function handler(
     },
   })
 
+  console.log(userExists)
+
   if (userExists) {
     return res.status(400).json({
       message: "Username already taken.",
